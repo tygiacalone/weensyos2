@@ -1,0 +1,46 @@
+Name:
+UCLA ID:
+
+Collaborators:
+
+-------------------------------------------------------------------------------
+
+Response to Exercise 1:
+
+The name of the scheduling algorithm is: Round robin scheduling
+
+
+(Exercise 2 is a coding exercise): Complete
+
+
+Response to Exercise 3:
+
+TAT = completion time - arrival time
+Average turnaround time for scheduling_algorithm 0: ((1280 - 3) + (1280 - 2) + (1280 -1) + 1280)/4 = 1278.5 ms // Proc 1 finished 3 ms early, proc 2 2 ms early, etc.
+Average turnaround time for scheduling_algorithm 1: (320 + 640 + 960 + 1280)/4 = 800 ms
+
+Wait Time = execution start time - arrival time
+Average wait time for scheduling_algorithm 0: (0 + 1 + 2 + 3)/4 = 1.5 ms // Alternating in sequential order
+Average wait time for scheduling_algorithm 1: (0 + 320 + 640 + 960)/4 = 480 ms // Waiting for all 320 of each number to be printed for each process before it.
+
+
+Exercise 4:
+
+Did you complete Exercise 4A, Exercise 4B, or both for extra credit?
+
+
+Exercise 5:
+Process 4 was the first process noticeably interrupted during execution. This may be assumed because the '4' character is not printed, as shown by the output below: 
+
+The resulting beginning output was: 1234 1234 1234 1234 1231
+                                                           ^ proc 4 interrupted
+
+
+(Exercise 6 is a coding exercise)
+
+
+Anything else you'd like us to know:
+
+
+
+Extra credit exercises:
