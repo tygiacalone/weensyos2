@@ -13,6 +13,7 @@
  *   PRINTCHAR appropriately.
  *
  *****************************************************************************/
+#define PREPROCSYM
 
 #ifndef PRINTCHAR
 #define PRINTCHAR	('1' | 0x0C00)
@@ -35,10 +36,21 @@ start(void)
 
 	for (i = 0; i < RUNCOUNT; i++) {
 		// Write characters to the console, yielding after each one.
+                //
+                // Exercise 8 implementation with interrupt
+                #ifdef PREPROCSYM
+                  sys_print((uint16_t)PRINTCHAR);
+                #endif
+
+                #ifndef PREPROCSYM
                 while (atomic_swap(&lock, 1) != 0)
                    continue;
-		*cursorpos++ = PRINTCHAR;
+		
+                *cursorpos++ = PRINTCHAR;
+                
                 atomic_swap(&lock, 0);
+                #endif
+
 		sys_yield();
 
 	}

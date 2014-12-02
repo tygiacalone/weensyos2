@@ -103,7 +103,7 @@ start(void)
 	cursorpos = (uint16_t *) 0xB8000;
 
 	// Initialize the scheduling algorithm.
-	scheduling_algorithm = 3;
+	scheduling_algorithm = 0;
 
 	// Switch to the first process.
 	run(&proc_array[1]);
@@ -160,10 +160,15 @@ interrupt(registers_t *reg)
                 current->p_priority = reg->reg_eax; //Set new priority
 		schedule();
 
+                // 4b
 	case INT_SYS_USER2:
 		/* Your code here (if you want). */
                 current->p_share = reg->reg_eax;
 		schedule();
+
+        case INT_SYS_PRINT:
+                *cursorpos++ = reg->reg_eax;
+                run(current);
 
 	case INT_CLOCK:
 		// A clock interrupt occurred (so an application exhausted its
