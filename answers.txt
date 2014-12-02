@@ -35,7 +35,7 @@ Process 4 was the first process noticeably interrupted during execution. This ma
 The resulting beginning output was: 1234 1234 1234 1234 1231
                                                            ^ proc 4 interrupted
 
-
+ 
 (Exercise 6 is a coding exercise)
 
 
