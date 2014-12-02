@@ -62,6 +62,7 @@ void
 start(void)
 {
 	int i;
+        lock = 0;
 
 	// Set up hardware (schedos-x86.c)
 	segments_init();
@@ -98,7 +99,7 @@ start(void)
 	cursorpos = (uint16_t *) 0xB8000;
 
 	// Initialize the scheduling algorithm.
-	scheduling_algorithm = 2;
+	scheduling_algorithm = 0;
 
 	// Switch to the first process.
 	run(&proc_array[1]);
@@ -147,12 +148,13 @@ interrupt(registers_t *reg)
 		current->p_exit_status = reg->reg_eax;
 		schedule();
 
-                // 4A scheduling
+                // 4A set priority
 	case INT_SYS_USER1:
 		// 'sys_user*' are provided for your convenience, in case you
 		// want to add a system call.
 		/* Your code here (if you want). */
-		run(current);
+                current->p_priority = reg->reg_eax; //Set new priority
+		schedule();
 
 	case INT_SYS_USER2:
 		/* Your code here (if you want). */
@@ -225,20 +227,44 @@ schedule(void)
 	if (scheduling_algorithm == 2)
         {
 	  int i = 0;
-          pid_t highest_priority_pid = 0;
+          unsigned int priority = 0xffffffff; // Max value
 
           while (1) {
-                        // Run processes in order of schedos number.
+                        pid = (pid + 1) % NPROCS;
+
+                        // Find lowest priority value
                         for (i = 1; i < NPROCS; i++)
                         {
-                          if (proc_array[i].p_state == P_RUNNABLE){
-                            highest_priority_pid = i;
-                            break;
-                          }
+                          if ((proc_array[i].p_priority < priority) && proc_array[i].p_state == P_RUNNABLE)
+                            priority = proc_array[i].p_priority;
                         }
-			// Run the selected process
-			if (highest_priority_pid != 0)
-				run(&proc_array[highest_priority_pid]);
+
+                        // Run processes with highest priority 
+                        if (proc_array[pid].p_priority == priority && proc_array[pid].p_state == P_RUNNABLE)
+                           run(&proc_array[pid]);
+
+		}
+        }
+
+	if (scheduling_algorithm == 3)
+        {
+	  int i = 0;
+          unsigned int priority = 0xffffffff; // Max value
+
+          while (1) {
+                        pid = (pid + 1) % NPROCS;
+
+                        // Find lowest priority value
+                        for (i = 1; i < NPROCS; i++)
+                        {
+                          if ((proc_array[i].p_priority < priority) && proc_array[i].p_state == P_RUNNABLE)
+                            priority = proc_array[i].p_priority;
+                        }
+
+                        // Run processes with highest priority 
+                        if (proc_array[pid].p_priority == priority && proc_array[pid].p_state == P_RUNNABLE)
+                           run(&proc_array[pid]);
+
 		}
         }
 

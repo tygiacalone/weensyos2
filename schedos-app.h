@@ -14,6 +14,24 @@
 #define RUNCOUNT	320
 
 
+static inline void
+sys_set_priority(int priority)
+{
+	// Different system call, different interrupt number (INT_SYS_EXIT).
+	// This time, we also pass an argument to the system call.
+	// We do this by loading the argument into a known register; then
+	// the kernel can look up that register value to read the argument.
+	// Here, the status is loaded into register %eax.
+	// You can load other registers with similar syntax; specifically:
+	//	"a" = %eax, "b" = %ebx, "c" = %ecx, "d" = %edx,
+	//	"S" = %esi, "D" = %edi.
+	asm volatile("int %0\n"
+		     : : "i" (INT_SYS_USER1),
+		         "a" (priority)
+		     : "cc", "memory");
+}
+
+
 /*****************************************************************************
  * sys_yield
  *
@@ -60,5 +78,6 @@ sys_exit(int status)
 		     : "cc", "memory");
     loop: goto loop; // Convince GCC that function truly does not return.
 }
+
 
 #endif
