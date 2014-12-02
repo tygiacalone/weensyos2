@@ -1,6 +1,6 @@
 00018004 A lock
 00198000 A cursorpos
 00500000 T start
-00501045 A __bss_start
-00501045 A _edata
+00501047 A __bss_start
+00501047 A _edata
 00501048 A _end

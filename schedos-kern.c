@@ -92,6 +92,10 @@ start(void)
 
 		// Mark the process as runnable!
 		proc->p_state = P_RUNNABLE;
+
+                // Set sharing values
+                proc->p_ran = 0;
+                proc->p_share = 1; //By default
 	}
 
 	// Initialize the cursor-position shared variable to point to the
@@ -99,7 +103,7 @@ start(void)
 	cursorpos = (uint16_t *) 0xB8000;
 
 	// Initialize the scheduling algorithm.
-	scheduling_algorithm = 0;
+	scheduling_algorithm = 3;
 
 	// Switch to the first process.
 	run(&proc_array[1]);
@@ -158,7 +162,8 @@ interrupt(registers_t *reg)
 
 	case INT_SYS_USER2:
 		/* Your code here (if you want). */
-		run(current);
+                current->p_share = reg->reg_eax;
+		schedule();
 
 	case INT_CLOCK:
 		// A clock interrupt occurred (so an application exhausted its
@@ -248,24 +253,20 @@ schedule(void)
 
 	if (scheduling_algorithm == 3)
         {
-	  int i = 0;
-          unsigned int priority = 0xffffffff; // Max value
-
           while (1) {
-                        pid = (pid + 1) % NPROCS;
+              pid = (pid + 1) % NPROCS;
 
-                        // Find lowest priority value
-                        for (i = 1; i < NPROCS; i++)
-                        {
-                          if ((proc_array[i].p_priority < priority) && proc_array[i].p_state == P_RUNNABLE)
-                            priority = proc_array[i].p_priority;
-                        }
-
-                        // Run processes with highest priority 
-                        if (proc_array[pid].p_priority == priority && proc_array[pid].p_state == P_RUNNABLE)
-                           run(&proc_array[pid]);
-
-		}
+              // Procs are skipped when they == their p_share value. Otherwise, sequential execution.
+              if (proc_array[pid].p_state == P_RUNNABLE)
+              {
+                 if (proc_array[pid].p_ran >= proc_array[pid].p_share)
+                   proc_array[pid].p_ran = 0; // Reset run count and skip if == 0
+                 else {
+                    proc_array[pid].p_ran++;
+                    run(&proc_array[pid]);
+                  }
+              }
+            }
         }
 
 

@@ -8,5 +8,5 @@
 #define PRINTCHAR	('3' | 0x0900)
 
 #define PRIORITY 2
-
+#define SHARE 0
 #include "schedos-1.c"

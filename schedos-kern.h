@@ -29,6 +29,8 @@ typedef struct process {
 					// 'registers_t' defined in x86.h
                                         //
         int p_priority;                 // Process's priority level
+        int p_share;                    // Share weight
+        int p_ran;                      // How many times ran
 
 	procstate_t p_state;		// Process state; see above
 	int p_exit_status;		// Process's exit status

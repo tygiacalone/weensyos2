@@ -22,11 +22,16 @@
 #define PRIORITY 1
 #endif
 
+#ifndef SHARE
+#define SHARE 1
+#endif
+
 void
 start(void)
 {
 	int i;
         sys_set_priority(PRIORITY);
+        sys_set_share(SHARE);
 
 	for (i = 0; i < RUNCOUNT; i++) {
 		// Write characters to the console, yielding after each one.
