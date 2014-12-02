@@ -43,5 +43,8 @@ Complete
 Anything else you'd like us to know:
 
 
-
 Extra credit exercises:
+
+Completed 4a and 4b.
+
+Completed Exercise 8 utilizing an interrupt rather than atomic_swap call.
